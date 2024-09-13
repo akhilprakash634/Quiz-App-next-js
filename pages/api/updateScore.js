@@ -13,24 +13,21 @@ export default async function handler(req, res) {
   }
 
   const { score } = req.body;
-  console.log('Received score update request:', score);
 
   await dbConnect();
 
   try {
     const user = await User.findById(token.id);
     if (!user) {
-      console.log('User not found:', token.id);
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const oldScore = user.totalScore;
     user.totalScore += score;
+    user.weeklyScore += score;
+    user.lastScoreUpdate = new Date();
     await user.save();
 
-    console.log(`Updated score for ${user.email}: ${oldScore} -> ${user.totalScore}`);
-
-    res.status(200).json({ message: 'Score updated successfully', totalScore: user.totalScore });
+    res.status(200).json({ message: 'Score updated successfully', totalScore: user.totalScore, weeklyScore: user.weeklyScore });
   } catch (error) {
     console.error('Error updating score:', error);
     res.status(500).json({ message: 'Error updating score', error: error.message });

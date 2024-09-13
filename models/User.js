@@ -19,6 +19,14 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  weeklyScore: {
+    type: Number,
+    default: 0,
+  },
+  lastScoreUpdate: {
+    type: Date,
+    default: Date.now,
+  },
 }, { timestamps: true });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

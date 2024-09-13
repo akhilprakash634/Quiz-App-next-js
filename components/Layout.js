@@ -1,43 +1,43 @@
-import Head from 'next/head'
-import Link from 'next/link'
+import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Layout({ children }) {
-  return (
-    <>
-      <Head>
-        <title>Quiz App</title>
-        <meta name="description" content="A simple quiz application" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+  const { data: session } = useSession();
 
-      <nav className="bg-gray-800 text-white p-4">
+  return (
+    <div>
+      <nav className="bg-blue-500 p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold">
+          <Link href="/" className="text-white text-2xl font-bold">
             Quiz App
           </Link>
           <div>
-            <Link href="/login" className="mr-4">
-              Login
+            <Link href="/leaderboard" className="text-white mr-4">
+              Leaderboard
             </Link>
-            <Link href="/signup" className="mr-4">
-              Sign Up
-            </Link>
-            <Link href="/dashboard">
-              Dashboard
-            </Link>
+            {session ? (
+              <>
+                <Link href="/dashboard" className="text-white mr-4">
+                  Dashboard
+                </Link>
+                <button onClick={() => signOut()} className="text-white">
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="text-white mr-4">
+                  Login
+                </Link>
+                <Link href="/signup" className="text-white">
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
-
-      <main className="container mx-auto mt-8 px-4">
-        {children}
-      </main>
-
-      <footer className="bg-gray-800 text-white p-4 mt-8">
-        <div className="container mx-auto text-center">
-          © 2024 Quiz App. All rights reserved.
-        </div>
-      </footer>
-    </>
-  )
+      <main>{children}</main>
+    </div>
+  );
 }
